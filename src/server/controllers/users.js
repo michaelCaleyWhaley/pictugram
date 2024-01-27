@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-let User = require('../models/user.model');
+const User = require('../models/user');
 
 function generateAccessToken(id, username) {
   return jwt.sign({ id, username }, process.env.TOKEN_SECRET, {
@@ -19,22 +19,21 @@ router.route('/register').post((req, res) => {
   const newUser = new User({ username, password });
   User.findOne({ username: username }, (err, user) => {
     if (user) {
-      res.send({ message: 'User Already Exist' });
-    } else {
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
-          newUser.password = hash;
-          newUser.save().then((user) => {
-            const token = generateAccessToken(user.id, user.username);
-            res.json({
-              token,
-              user,
-            });
+      return res.send({ message: 'User Already Exist' });
+    }
+    bcrypt.genSalt(10, (_err, salt) => {
+      bcrypt.hash(newUser.password, salt, (_hashErr, hash) => {
+        if (err) throw err;
+        newUser.password = hash;
+        newUser.save().then((user) => {
+          const token = generateAccessToken(user.id, user.username);
+          res.json({
+            token,
+            user,
           });
         });
       });
-    }
+    });
   });
 });
 
