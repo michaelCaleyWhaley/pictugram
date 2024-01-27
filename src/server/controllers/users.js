@@ -17,11 +17,12 @@ router.route('/register').post((req, res) => {
   }
 
   const newUser = new User({ username, password });
-  User.findOne({ username: username }, (err, user) => {
-    if (user) {
+  return User.findOne({ username }, (err, existingUser) => {
+    if (existingUser) {
       return res.send({ message: 'User Already Exist' });
     }
-    bcrypt.genSalt(10, (_err, salt) => {
+
+    return bcrypt.genSalt(10, (_err, salt) => {
       bcrypt.hash(newUser.password, salt, (_hashErr, hash) => {
         if (err) throw err;
         newUser.password = hash;
@@ -43,7 +44,7 @@ router.route('/login').post((req, res) => {
   if (!password || !username) {
     return res.status(400).json({ msg: 'Please Fill All Fields' });
   }
-  User.findOne({ username: username.toLowerCase() }, (err, user) => {
+  return User.findOne({ username: username.toLowerCase() }, (_err, user) => {
     if (user) {
       bcrypt.compare(password, user.password).then((isMatch) => {
         if (!isMatch)
@@ -51,7 +52,7 @@ router.route('/login').post((req, res) => {
 
         const token = generateAccessToken(user.id, user.username);
 
-        res.json({
+        return res.json({
           token,
           user,
         });
