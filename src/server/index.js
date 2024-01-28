@@ -4,6 +4,7 @@ const cors = require('cors');
 const usersRouter = require('./controllers/users');
 const postsRouter = require('./controllers/posts');
 const commentRouter = require('./controllers/comment');
+const viewRouter = require('./view');
 
 require('dotenv').config();
 
@@ -15,6 +16,10 @@ app.use(express.json());
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/comment', commentRouter);
+app.use('/', viewRouter);
+
+// serve build files
+app.use(express.static('build'));
 
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri);

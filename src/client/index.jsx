@@ -1,7 +1,11 @@
-import * as React from 'react';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 
 function App() {
-  return <h1>Hello, world!</h1>;
+  return <h1>Hello</h1>;
 }
 
-export default App;
+const domNode = document.getElementById('root');
+const root = createRoot(domNode);
+
+root.render(<App />);

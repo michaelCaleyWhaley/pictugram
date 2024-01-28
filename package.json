@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/server",
+    "dev": "npm run start & npm run client",
+    "start": "nodemon --watch src/server ./src/server",
+    "client": "nodemon --watch src/client --exec 'npm run build'",
     "build": "esbuild ./src/client --bundle --outfile=./build/client-bundle.js"
   },
   "author": "Michael Caley",
