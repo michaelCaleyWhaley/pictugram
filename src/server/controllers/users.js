@@ -9,7 +9,7 @@ function generateAccessToken(id, username) {
   });
 }
 
-router.route('/register').post((req, res) => {
+router.route('/register').post(async (req, res) => {
   const { username, password } = req.body;
 
   if (!password || !username) {
@@ -17,47 +17,48 @@ router.route('/register').post((req, res) => {
   }
 
   const newUser = new User({ username, password });
-  return User.findOne({ username }, (err, existingUser) => {
-    if (existingUser) {
-      return res.send({ message: 'User Already Exist' });
-    }
+  const existingUser = await User.findOne({ username }).catch(() => {
+    return res.status(500).json({ msg: 'Error finding user' });
+  });
 
-    return bcrypt.genSalt(10, (_err, salt) => {
-      bcrypt.hash(newUser.password, salt, (_hashErr, hash) => {
-        if (err) throw err;
-        newUser.password = hash;
-        newUser.save().then((user) => {
-          const token = generateAccessToken(user.id, user.username);
-          res.json({
-            token,
-            user,
-          });
-        });
-      });
-    });
+  if (existingUser) {
+    return res.send({ message: 'User Already Exist' });
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(newUser.password, salt);
+  newUser.password = hash;
+  const user = await newUser.save();
+
+  const token = generateAccessToken(user.id, user.username);
+
+  return res.json({
+    token,
+    user,
   });
 });
 
-router.route('/login').post((req, res) => {
+router.route('/login').post(async (req, res) => {
   const { username, password } = req.body;
 
   if (!password || !username) {
     return res.status(400).json({ msg: 'Please Fill All Fields' });
   }
-  return User.findOne({ username: username.toLowerCase() }, (_err, user) => {
-    if (user) {
-      bcrypt.compare(password, user.password).then((isMatch) => {
-        if (!isMatch)
-          return res.status(400).json({ msg: 'Invalid Credentials' });
 
-        const token = generateAccessToken(user.id, user.username);
+  const user = await User.findOne({ username });
 
-        return res.json({
-          token,
-          user,
-        });
-      });
-    }
+  if (!user) {
+    return res.status(400).json({ msg: 'User not found' });
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return res.status(400).json({ msg: 'Invalid Credentials' });
+
+  const token = generateAccessToken(user.id, user.username);
+
+  return res.json({
+    token,
+    user,
   });
 });
 

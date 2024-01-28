@@ -5,13 +5,13 @@ const userSchema = new Schema({
   username: {
     type: String,
     required: true,
-    trime: true,
+    trim: true,
     minlength: 3,
   },
   password: {
     type: String,
     required: true,
-    trime: true,
+    trim: true,
     minlength: 3,
   },
 });
