@@ -1,13 +1,19 @@
 const router = require('express').Router();
+const { INDEX_HTML } = require('../constants/html');
 
-router.route('/').get((req, res) => {
+router.route('/').get((_req, res) => {
   res.set('Content-Type', 'text/html');
+  res.status(200).send(INDEX_HTML);
+});
 
-  res
-    .status(200)
-    .send(
-      '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon-48x48.png"><link rel="stylesheet" href="client-bundle.css"></head><div id="root"></div><script defer type="text/javascript" src="/client-bundle.js"></script>',
-    );
+router.route('/register').get((_req, res) => {
+  res.set('Content-Type', 'text/html');
+  res.status(200).send(INDEX_HTML);
+});
+
+router.route('/home').get((_req, res) => {
+  res.set('Content-Type', 'text/html');
+  res.status(200).send(INDEX_HTML);
 });
 
 module.exports = router;

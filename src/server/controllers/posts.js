@@ -6,11 +6,12 @@ const User = require('../models/user');
 
 // get all post
 router.get('/', auth, async (_req, res) => {
-  await Post.find()
+  const posts = await Post.find()
     .exec()
-    .sort({ date: -1 })
-    .then((posts) => res.json(posts))
     .catch((err) => res.status(400).json(`error: ${err}`));
+
+  posts.sort();
+  res.json(posts);
 });
 
 // add a new post

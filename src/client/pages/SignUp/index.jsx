@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-import './styles.css';
-
-function Login() {
+function SignUp() {
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = JSON.stringify({
@@ -19,7 +16,7 @@ function Login() {
 
     const config = {
       method: 'post',
-      url: '/users/login',
+      url: '/users/register',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -51,14 +48,13 @@ function Login() {
           type="password"
         />
         <br />
-        <button type="submit">login</button>
-
-        <a href="/register" className="create-account">
-          create an account
+        <button type="submit">register</button>
+        <a href="/" className="create-account">
+          already have an account
         </a>
       </form>
     </div>
   );
 }
 
-export { Login };
+export { SignUp };
