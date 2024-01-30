@@ -40,7 +40,9 @@ router.route('/add-comment/:id/:userId').post(auth, async (req, res) => {
     content,
     username: user.username,
   });
-  newContent.save().then(() => res.json('Comment Added'));
+
+  await newContent.save();
+
   const data = await Post.findByIdAndUpdate(
     { _id: id },
     { $push: { comments: newContent } },

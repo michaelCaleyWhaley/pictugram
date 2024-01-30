@@ -1,0 +1,16 @@
+.post-card {
+  margin: 0 0 50px;
+}
+
+.post-image {
+  width: 100%;
+  max-width: 300px;
+}
+
+.username {
+  margin-bottom: 0;
+}
+
+.post-caption {
+  margin: 10px 0 10px;
+}

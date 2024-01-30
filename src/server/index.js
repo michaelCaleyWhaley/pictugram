@@ -32,5 +32,5 @@ connection.once('open', () => {
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`Server running on port: ${port}`);
+  console.log(`Server running on port: http://localhost:${port}`);
 });
